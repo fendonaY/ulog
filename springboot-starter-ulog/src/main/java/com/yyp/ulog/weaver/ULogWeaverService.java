@@ -26,7 +26,7 @@ public final class ULogWeaverService {
             ULogInfo log = uLogFactory.createLog(uLogContext, uLogWeaverInfo);
             if (ULogWeaverInfo.WeaverValue.DEFAULT_NULL.getValue().equals(log.getSingleSign()))
                 uLogWeaverInfo.setSingleSign(null);
-            Assert.hasLength(uLogWeaverInfo.getSingleSign(), "no singleSign no weaving");
+            Assert.hasLength(uLogWeaverInfo.getSingleSign(), "no single sign can't weaving");
             uLogContext.getULogHolder().setULogInfo(log);
         }
         return doRecord(!exist, uLogWeaverInfo.isNeedResult(), businessHandler);
