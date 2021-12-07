@@ -12,7 +12,6 @@ public class DefaultULogFactory implements ULogFactory {
     public ULogInfo createLog(ULogContext uLogContext, ULogWeaverInfo weaverInfo) {
         ULogInfo uLogInfo = new ULogInfo();
         BeanUtils.copyProperties(weaverInfo, uLogInfo);
-//        uLogInfo.setCreateAt();
         uLogInfo.setOperatorId(uLogContext.getContextId());
         uLogInfo.setLogParam(JSONArray.toJSONString(weaverInfo.getArguments()).getBytes(StandardCharsets.UTF_8));
         return uLogInfo;

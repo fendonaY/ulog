@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-public class ALogMapperPostProcessor extends PropertyResourceConfigurer {
+public class ULogMapperPostProcessor extends PropertyResourceConfigurer {
 
     private final String LogMapperPath = "com.yyp.ulog.dao";
 

@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.yyp.ulog.ULogConfiguration,\
- com.yyp.ulog.ALogMapperPostProcessor
+ com.yyp.ulog.ULogMapperPostProcessor
