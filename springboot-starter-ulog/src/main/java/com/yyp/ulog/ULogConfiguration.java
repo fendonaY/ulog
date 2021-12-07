@@ -4,6 +4,7 @@ import com.yyp.ulog.core.DBULogManager;
 import com.yyp.ulog.core.DefaultULogFactory;
 import com.yyp.ulog.core.ULogFactory;
 import com.yyp.ulog.core.ULogManager;
+import com.yyp.ulog.listener.AppStartLog;
 import com.yyp.ulog.weaver.ULogWeaverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

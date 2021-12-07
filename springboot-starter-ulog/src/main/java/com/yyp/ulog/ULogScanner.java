@@ -43,6 +43,7 @@ public final class ULogScanner extends AbstractAutoProxyCreator {
             return bean;
         }
         interceptor = new ULogInterceptor(uLogWeaverService);
+        setProxyTargetClass(true);
         return super.wrapIfNecessary(bean, beanName, cacheKey);
     }
 

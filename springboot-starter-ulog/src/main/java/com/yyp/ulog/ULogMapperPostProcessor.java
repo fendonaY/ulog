@@ -21,7 +21,7 @@ public class ULogMapperPostProcessor extends PropertyResourceConfigurer {
     @Override
     protected void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props) throws BeansException {
         String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
-        if (beanDefinitionNames.length > 0) {
+        if (beanDefinitionNames.length == 1) {
             BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanDefinitionNames[0]);
             MutablePropertyValues propertyValues = beanDefinition.getPropertyValues();
             PropertyValue basePackage = propertyValues.getPropertyValue("basePackage");
