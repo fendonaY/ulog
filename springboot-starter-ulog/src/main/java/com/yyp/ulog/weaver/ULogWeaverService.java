@@ -58,7 +58,8 @@ public final class ULogWeaverService {
             }
             throw t;
         } finally {
-            uLogManager.removeLog();
+            if (record)
+                uLogManager.removeLog();
         }
     }
 }
