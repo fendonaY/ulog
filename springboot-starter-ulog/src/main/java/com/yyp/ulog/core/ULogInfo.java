@@ -1,41 +1,53 @@
 package com.yyp.ulog.core;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("u_log")
 public class ULogInfo {
 
-    @TableId(value = "id", type = IdType.ASSIGN_UUID)
-    private String id;
+    /**
+     * id
+     */
+    private Integer id;
 
+    /**
+     * 请求api
+     */
     private String api;
 
-    private String operator;
-
+    /**
+     * 请求唯一标识
+     */
     private String singleSign;
 
-    private String busModule;
-
-    private String type;
-
+    /**
+     * 本次请求状态：0成功，1失败
+     */
     private Integer operatorState = 0;
 
-    private String operatorId;
+    /**
+     * 日志id
+     */
+    private String logId;
 
-    @TableField(value = "`desc`")
-    private String desc;
+    /**
+     * 日志描述
+     */
+    private String logDesc;
 
-    private String date;
-
+    /**
+     * 日志创建时间
+     */
     private String createAt;
 
+    /**
+     * 请求参数
+     */
     private byte[] logParam;
 
+    /**
+     * 请求响应
+     */
     private byte[] logResult;
 
 }

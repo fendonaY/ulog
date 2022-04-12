@@ -24,9 +24,10 @@ public interface ULogManager {
     /**
      * 持久化当前上下文的日志信息
      *
+     * @param result 业务响应值
      * @return true保存成功，false保存失败
      */
-    boolean saveLog();
+    boolean saveLog(Object result);
 
     /**
      * 删除日志

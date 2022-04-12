@@ -3,6 +3,7 @@ package com.yyp.ulog.listener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.context.event.*;
+import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
@@ -18,6 +19,8 @@ public class AppStartLog implements ApplicationListener<ApplicationEvent> {
             printLog("应用程序开始准备环境");
         } else if (event instanceof ApplicationPreparedEvent) {
             printLog("应用程序开始加载IOC");
+        } else if (event instanceof ServletWebServerInitializedEvent) {
+            printLog("应用程序容器启动完成");
         } else if (event instanceof ApplicationReadyEvent) {
             printLog("应用程序加载完成");
         } else if (event instanceof ContextClosedEvent && ((ContextClosedEvent) event).getApplicationContext().getParent() == null) {

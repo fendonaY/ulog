@@ -33,35 +33,19 @@ public class ULogInterceptor implements MethodInterceptor {
         if (uLog != MergedAnnotation.missing()) {
             ULogWeaverInfo logWeaverInfo = parseULogAnnotation(uLog);
             prepareWeaverInfo(logWeaverInfo, methodInvocation);
-            getSingleSign(logWeaverInfo);
             return logWeaverService.record(logWeaverInfo, methodInvocation::proceed);
         } else {
             return methodInvocation.proceed();
         }
     }
 
-    private void getSingleSign(ULogWeaverInfo logWeaverInfo) {
-        if (logWeaverInfo.getSingleSignIndex() != -1) {
-            Object attr = ParamUtil.getAttr(logWeaverInfo.getSingleSignIndex(), "", logWeaverInfo.getArguments());
-            logWeaverInfo.setSingleSign(String.valueOf(attr));
-        } else {
-            Object attrList = ParamUtil.getAttrList(logWeaverInfo.getSingleSign(), logWeaverInfo.getArguments());
-            if (attrList != null && attrList instanceof List) {
-                attrList = ((List) attrList).get(0);
-            }
-            logWeaverInfo.setSingleSign(String.valueOf(attrList));
-        }
-
-    }
-
     private ULogWeaverInfo parseULogAnnotation(MergedAnnotation uLog) {
         ULogWeaverInfo logWeaverInfo = new ULogWeaverInfo();
-        logWeaverInfo.setSingleSignIndex(uLog.getInt("singleSignIndex"));
         logWeaverInfo.setBusModule(uLog.getString("busModule"));
         logWeaverInfo.setType(uLog.getString("type"));
-        logWeaverInfo.setSingleSign(uLog.getString("singleSign"));
         logWeaverInfo.setDesc(uLog.getString("desc"));
         logWeaverInfo.setNeedResult(!uLog.getBoolean("ignoreResult"));
+        logWeaverInfo.setNeedParam(!uLog.getBoolean("ignoreParam"));
         return logWeaverInfo;
     }
 

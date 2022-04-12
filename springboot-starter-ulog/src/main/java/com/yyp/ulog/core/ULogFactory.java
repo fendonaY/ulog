@@ -2,7 +2,7 @@ package com.yyp.ulog.core;
 
 import com.yyp.ulog.weaver.ULogWeaverInfo;
 
-public interface ULogFactory {
+public interface ULogFactory<T extends ULogInfo> {
 
-    ULogInfo createLog(ULogContext uLogContext, ULogWeaverInfo weaverInfo);
+    T createLog(ULogContext uLogContext, ULogWeaverInfo weaverInfo);
 }

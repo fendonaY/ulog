@@ -1,19 +1,16 @@
 package com.yyp.ulog.core;
 
-import com.alibaba.fastjson.JSONArray;
 import com.yyp.ulog.weaver.ULogWeaverInfo;
 import org.springframework.beans.BeanUtils;
 
-import java.nio.charset.StandardCharsets;
-
-public class DefaultULogFactory implements ULogFactory {
+public class DefaultULogFactory implements ULogFactory<ULogInfo> {
 
     @Override
     public ULogInfo createLog(ULogContext uLogContext, ULogWeaverInfo weaverInfo) {
         ULogInfo uLogInfo = new ULogInfo();
         BeanUtils.copyProperties(weaverInfo, uLogInfo);
-        uLogInfo.setOperatorId(uLogContext.getContextId());
-        uLogInfo.setLogParam(JSONArray.toJSONString(weaverInfo.getArguments()).getBytes(StandardCharsets.UTF_8));
+        uLogInfo.setLogDesc(weaverInfo.getDesc());
+        uLogInfo.setLogId(uLogContext.getContextId());
         return uLogInfo;
     }
 }

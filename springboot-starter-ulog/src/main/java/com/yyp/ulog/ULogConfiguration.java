@@ -1,10 +1,6 @@
 package com.yyp.ulog;
 
-import com.yyp.ulog.core.DBULogManager;
-import com.yyp.ulog.core.DefaultULogFactory;
-import com.yyp.ulog.core.ULogFactory;
-import com.yyp.ulog.core.ULogManager;
-import com.yyp.ulog.listener.AppStartLog;
+import com.yyp.ulog.core.*;
 import com.yyp.ulog.weaver.ULogWeaverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -13,20 +9,20 @@ import org.springframework.context.annotation.Bean;
 public class ULogConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean(value = ULogManager.class)
-    public ULogManager dbULogManager() {
-        return new DBULogManager();
+    @ConditionalOnMissingBean
+    public ULogManager defaultULogManager() {
+        return new DefaultULogManager();
     }
 
     @Bean
-    @ConditionalOnMissingBean(value = ULogFactory.class)
+    @ConditionalOnMissingBean
     public ULogFactory defaultFactory() {
         return new DefaultULogFactory();
     }
 
     @Bean
-    public ULogWeaverService uLogWeaverService(@Autowired ULogManager uLogManager, @Autowired ULogFactory uLogFactory) {
-        return new ULogWeaverService(uLogManager, uLogFactory);
+    public ULogWeaverService uLogWeaverService(ULogManager uLogManager, ULogFactory uLogFactory, LogGlobalConfig logGlobalConfig) {
+        return new ULogWeaverService(uLogManager, uLogFactory, logGlobalConfig);
     }
 
     @Bean

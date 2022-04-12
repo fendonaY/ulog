@@ -1,11 +1,7 @@
 package com.yyp.ulog.weaver;
 
-import com.alibaba.fastjson.JSON;
 import com.yyp.ulog.core.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
-
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public final class ULogWeaverService {
@@ -13,33 +9,35 @@ public final class ULogWeaverService {
 
     private ULogFactory uLogFactory;
 
-    public ULogWeaverService(ULogManager uLogManager, ULogFactory uLogFactory) {
+    private LogGlobalConfig logGlobalConfig;
+
+    public ULogWeaverService() {
+    }
+
+    public ULogWeaverService(ULogManager uLogManager, ULogFactory uLogFactory, LogGlobalConfig logGlobalConfig) {
         this.uLogManager = uLogManager;
         this.uLogFactory = uLogFactory;
+        this.logGlobalConfig = logGlobalConfig;
     }
 
     public Object record(ULogWeaverInfo uLogWeaverInfo, BusinessHandler businessHandler) throws Throwable {
         boolean exist = uLogManager.existContext();
         if (!exist) {
-            ULogContext uLogContext = new SimpleULogContext().buildContextId();
+            ULogContext uLogContext = new SimpleULogContext(logGlobalConfig, uLogWeaverInfo);
             uLogManager.buildContext(uLogContext);
-            ULogInfo log = uLogFactory.createLog(uLogContext, uLogWeaverInfo);
-            if (ULogWeaverInfo.WeaverValue.DEFAULT_NULL.getValue().equals(log.getSingleSign()))
-                uLogWeaverInfo.setSingleSign(null);
-            Assert.hasLength(uLogWeaverInfo.getSingleSign(), "no single sign can't weaving");
-            uLogContext.getULogHolder().setULogInfo(log);
+
+            ULogInfo uLogInfo = uLogFactory.createLog(uLogContext, uLogWeaverInfo);
+            uLogContext.getULogHolder().setULogInfo(uLogInfo);
         }
-        return doRecord(!exist, uLogWeaverInfo.isNeedResult(), businessHandler);
+        return doRecord(!exist, businessHandler);
     }
 
-    private Object doRecord(boolean record, boolean isNeedResult, BusinessHandler businessHandler) throws Throwable {
+    private Object doRecord(boolean record, BusinessHandler businessHandler) throws Throwable {
         try {
             Object handle = businessHandler.handle();
             try {
                 if (record) {
-                    if (isNeedResult)
-                        uLogManager.getContext().getULogHolder().getULogInfo().setLogResult(JSON.toJSONString(handle).getBytes(StandardCharsets.UTF_8));
-                    uLogManager.saveLog();
+                    uLogManager.saveLog(handle);
                 }
             } catch (Exception e) {
                 log.error("record log error：", e.getMessage());
@@ -48,10 +46,7 @@ public final class ULogWeaverService {
         } catch (Throwable t) {
             if (record) {
                 try {
-                    ULogInfo uLogInfo = uLogManager.getContext().getULogHolder().getULogInfo();
-                    uLogInfo.setOperatorState(1);
-                    uLogManager.getContext().getULogHolder().getULogInfo().setLogResult(JSON.toJSONString(t).getBytes(StandardCharsets.UTF_8));
-                    uLogManager.saveLog();
+                    uLogManager.saveLog(t);
                 } catch (Exception e) {
                     log.error("record log error：", e.getMessage());
                 }

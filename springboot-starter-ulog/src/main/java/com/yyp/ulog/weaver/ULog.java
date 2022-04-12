@@ -16,28 +16,24 @@ public @interface ULog {
     String type();
 
     /**
-     * 唯一标识符对应下标
-     * 从参数里获取
-     */
-    int singleSignIndex() default -1;
-
-    /**
-     * 唯一标识符
-     * 从参数里获取
-     */
-    String singleSign() default "";
-
-    /**
      * 功能模板
      */
     String busModule();
+
+    /**
+     * 忽略参数
+     *
+     * @return false 记录参数，true 忽略
+     */
+    boolean ignoreParam() default false;
 
     /**
      * 忽略返回值
      *
      * @return false 记录返回值，true 忽略
      */
-    boolean ignoreResult() default false;
+    boolean ignoreResult() default true;
+
 
     /**
      * 操作描述

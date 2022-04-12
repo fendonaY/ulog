@@ -1,9 +1,7 @@
 package com.yyp.ulog.core;
 
-import org.slf4j.helpers.FormattingTuple;
-import org.slf4j.helpers.MessageFormatter;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import com.yyp.ulog.core.builder.ContextIdBuilder;
+import com.yyp.ulog.weaver.ULogWeaverInfo;
 
 /**
  * 日志上下文
@@ -14,14 +12,17 @@ public class SimpleULogContext implements ULogContext {
 
     private ULogHolder uLogHolder;
 
+    private ContextIdBuilder contextIdBuilder;
+
     public SimpleULogContext() {
         this.uLogHolder = new ULogHolder();
     }
 
-    @Override
-    public ULogContext buildContextId() {
-        this.contextId = Thread.currentThread().getName();
-        return this;
+    public SimpleULogContext(LogGlobalConfig logGlobalConfig, ULogWeaverInfo uLogWeaverInfo) {
+        this.contextIdBuilder = logGlobalConfig.getContextIdBuilder();
+        this.uLogHolder = new ULogHolder(logGlobalConfig.getLogExecutor(), logGlobalConfig.getLogHandler());
+        this.uLogHolder.setULogWeaverInfo(uLogWeaverInfo);
+        this.contextId = contextIdBuilder.build();
     }
 
     @Override
@@ -34,11 +35,7 @@ public class SimpleULogContext implements ULogContext {
         return this.contextId;
     }
 
-    @Override
-    public void formatDesc(String... params) {
-        if (StringUtils.hasText(contextId)) {
-            FormattingTuple formattingTuple = MessageFormatter.arrayFormat(uLogHolder.getULogInfo().getDesc(), params);
-            uLogHolder.getULogInfo().setDesc(formattingTuple.getMessage());
-        }
+    public void setContextId(String contextId) {
+        this.contextId = contextId;
     }
 }

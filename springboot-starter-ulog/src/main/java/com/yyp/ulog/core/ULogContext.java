@@ -5,11 +5,7 @@ package com.yyp.ulog.core;
  */
 public interface ULogContext {
 
-    ULogContext buildContextId();
-
     ULogHolder getULogHolder();
 
     String getContextId();
-
-    void formatDesc(String... params);
 }
