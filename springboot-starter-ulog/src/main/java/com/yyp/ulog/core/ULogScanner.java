@@ -2,7 +2,7 @@ package com.yyp.ulog.core;
 
 import com.yyp.ulog.util.AnnotationUtil;
 import com.yyp.ulog.weaver.ULog;
-import com.yyp.ulog.weaver.ULogInterceptor;
+import com.yyp.ulog.interceptor.ULogInterceptor;
 import com.yyp.ulog.weaver.ULogWeaverService;
 import lombok.SneakyThrows;
 import org.aopalliance.intercept.MethodInterceptor;
