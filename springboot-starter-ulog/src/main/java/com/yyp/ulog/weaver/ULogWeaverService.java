@@ -1,10 +1,16 @@
 package com.yyp.ulog.weaver;
 
 import com.yyp.ulog.core.*;
+import com.yyp.ulog.core.builder.MDCContextIdBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
+
+import java.util.concurrent.Executors;
 
 @Slf4j
-public final class ULogWeaverService {
+public final class ULogWeaverService implements InitializingBean {
     private ULogManager uLogManager;
 
     private ULogFactory uLogFactory;
@@ -56,5 +62,25 @@ public final class ULogWeaverService {
             if (record)
                 uLogManager.removeLog();
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        Assert.notNull(logGlobalConfig, "u-log config is null");
+        logGlobalConfig.nonnullOrElseSet(logGlobalConfig::getLogExecutor, logGlobalConfig::setLogExecutor, Executors.newSingleThreadExecutor());
+        logGlobalConfig.nonnullOrElseSet(logGlobalConfig::getContextIdBuilder, logGlobalConfig::setContextIdBuilder, new MDCContextIdBuilder());
+        logGlobalConfig.nonnullOrElseSet(logGlobalConfig::getLogHandler, logGlobalConfig::setLogHandler, (info) -> {
+            if (logGlobalConfig.getContextIdBuilder() instanceof MDCContextIdBuilder)
+                MDC.put(((MDCContextIdBuilder) logGlobalConfig.getContextIdBuilder()).getContextIDKey(), info.getLogId());
+            ULogWeaverInfo uLogWeaverInfo = info.getULogWeaverInfo();
+            if (uLogWeaverInfo != null) {
+                if (uLogWeaverInfo.isNeedParam()) {
+                    logGlobalConfig.getPrintHeadInfo().accept(info);
+                    logGlobalConfig.getPrintRequestInfo().accept(info);
+                }
+                if (uLogWeaverInfo.isNeedResult())
+                    logGlobalConfig.getPrintResponseInfo().accept(info);
+            }
+        });
     }
 }

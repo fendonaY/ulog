@@ -2,10 +2,14 @@ package com.yyp.ulog.core;
 
 import com.yyp.ulog.core.builder.ContextIdBuilder;
 import com.yyp.ulog.weaver.ULogWeaverInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * 日志上下文
  */
+@Slf4j
 public class SimpleULogContext implements ULogContext {
 
     private String contextId;

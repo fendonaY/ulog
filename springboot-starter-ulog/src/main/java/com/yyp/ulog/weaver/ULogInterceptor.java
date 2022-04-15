@@ -1,16 +1,16 @@
 package com.yyp.ulog.weaver;
 
 import com.yyp.ulog.util.AnnotationUtil;
-import com.yyp.ulog.util.ParamUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.util.ClassUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  * @author yyp
@@ -41,7 +41,7 @@ public class ULogInterceptor implements MethodInterceptor {
 
     private ULogWeaverInfo parseULogAnnotation(MergedAnnotation uLog) {
         ULogWeaverInfo logWeaverInfo = new ULogWeaverInfo();
-        logWeaverInfo.setBusModule(uLog.getString("busModule"));
+        logWeaverInfo.setModule(uLog.getString("module"));
         logWeaverInfo.setType(uLog.getString("type"));
         logWeaverInfo.setDesc(uLog.getString("desc"));
         logWeaverInfo.setNeedResult(!uLog.getBoolean("ignoreResult"));
@@ -53,5 +53,7 @@ public class ULogInterceptor implements MethodInterceptor {
         logWeaverInfo.setArguments(methodInvocation.getArguments());
         logWeaverInfo.setTargetMethod(methodInvocation.getMethod());
         logWeaverInfo.setTargetObject(methodInvocation.getThis());
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        logWeaverInfo.setRequest(requestAttributes.getRequest());
     }
 }

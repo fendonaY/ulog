@@ -1,4 +1,4 @@
-package com.yyp.ulog;
+package com.yyp.ulog.core;
 
 import com.yyp.ulog.util.AnnotationUtil;
 import com.yyp.ulog.weaver.ULog;

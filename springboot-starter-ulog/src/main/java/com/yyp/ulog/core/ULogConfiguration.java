@@ -1,8 +1,6 @@
-package com.yyp.ulog;
+package com.yyp.ulog.core;
 
-import com.yyp.ulog.core.*;
 import com.yyp.ulog.weaver.ULogWeaverService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
@@ -26,7 +24,13 @@ public class ULogConfiguration {
     }
 
     @Bean
-    public ULogScanner ulogScanner(@Autowired ULogWeaverService weaverService) {
+    public ULogScanner ulogScanner(ULogWeaverService weaverService) {
         return new ULogScanner(weaverService);
     }
+
+    @Bean
+    public LogGlobalConfig logGlobalConfig() {
+        return new LogGlobalConfig();
+    }
+
 }

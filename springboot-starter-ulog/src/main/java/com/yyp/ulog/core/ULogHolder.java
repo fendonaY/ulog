@@ -42,8 +42,6 @@ public class ULogHolder {
     public boolean saveLog(Object result) {
         if (getULogInfo() == null)
             return false;
-        if (getULogInfo().getId() != null)
-            return false;
         if (uLogWeaverInfo.isNeedParam()) {
             getULogInfo().setLogParam(JSONArray.toJSONString(uLogWeaverInfo.getArguments()).getBytes(StandardCharsets.UTF_8));
         }
@@ -52,12 +50,13 @@ public class ULogHolder {
         }
         if (result instanceof Throwable) {
             getULogInfo().setOperatorState(1);
+            getULogInfo().setThrowable((Throwable) result);
         }
 
         getLogExecutor().submit(() -> {
             try {
                 Assert.notNull(logHandler, "logHandler is null");
-                logHandler.handle();
+                logHandler.handle(getULogInfo());
                 log.info("weaving log succeeded, contextId：{}", uLogInfo.getLogId());
             } catch (Throwable e) {
                 log.error("ULog contextId：" + uLogInfo.getLogId() + "  weaving error：{}", e);

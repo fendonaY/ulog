@@ -1,24 +1,28 @@
 package com.yyp.ulog.core;
 
+import com.yyp.ulog.weaver.ULogWeaverInfo;
 import lombok.Data;
 
+/**
+ * ulog信息
+ */
 @Data
 public class ULogInfo {
 
     /**
-     * id
+     * 操作类型
      */
-    private Integer id;
+    private String type;
+
+    /**
+     * 操作模块
+     */
+    private String module;
 
     /**
      * 请求api
      */
     private String api;
-
-    /**
-     * 请求唯一标识
-     */
-    private String singleSign;
 
     /**
      * 本次请求状态：0成功，1失败
@@ -49,5 +53,15 @@ public class ULogInfo {
      * 请求响应
      */
     private byte[] logResult;
+
+    /**
+     * 编织信息
+     */
+    private ULogWeaverInfo uLogWeaverInfo;
+
+    /**
+     * 异常信息
+     */
+    private Throwable throwable;
 
 }

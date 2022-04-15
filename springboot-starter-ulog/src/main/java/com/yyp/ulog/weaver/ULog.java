@@ -18,7 +18,7 @@ public @interface ULog {
     /**
      * 功能模板
      */
-    String busModule();
+    String module();
 
     /**
      * 忽略参数
@@ -33,7 +33,6 @@ public @interface ULog {
      * @return false 记录返回值，true 忽略
      */
     boolean ignoreResult() default true;
-
 
     /**
      * 操作描述

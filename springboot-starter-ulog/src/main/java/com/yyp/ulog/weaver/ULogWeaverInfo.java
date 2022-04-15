@@ -2,6 +2,7 @@ package com.yyp.ulog.weaver;
 
 import lombok.Data;
 
+import javax.servlet.ServletRequest;
 import java.lang.reflect.Method;
 
 @Data
@@ -9,7 +10,7 @@ public class ULogWeaverInfo {
 
     private String type;
 
-    private String busModule;
+    private String module;
 
     private String desc;
 
@@ -22,5 +23,7 @@ public class ULogWeaverInfo {
     private Method targetMethod;
 
     private Object[] arguments;
+
+    private ServletRequest request;
 
 }

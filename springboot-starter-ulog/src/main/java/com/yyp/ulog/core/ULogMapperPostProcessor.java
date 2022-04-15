@@ -1,4 +1,4 @@
-package com.yyp.ulog;
+package com.yyp.ulog.core;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+/**
+ * 不内置日志表，未来将会删除
+ */
+@Deprecated
 public class ULogMapperPostProcessor extends PropertyResourceConfigurer {
 
     private final String LogMapperPath = "com.yyp.ulog.dao";
