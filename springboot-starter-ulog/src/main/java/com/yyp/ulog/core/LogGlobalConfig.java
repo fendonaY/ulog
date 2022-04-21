@@ -56,7 +56,6 @@ public class LogGlobalConfig {
      */
     private boolean enablePrint = false;
 
-
     /**
      * 简单的打印头部信息
      */
@@ -76,6 +75,7 @@ public class LogGlobalConfig {
         Logger uLog = LoggerFactory.getLogger("uLog");
         uLog.trace(stringJoiner.toString());
     };
+
     /**
      * 简单的打印请求信息
      */

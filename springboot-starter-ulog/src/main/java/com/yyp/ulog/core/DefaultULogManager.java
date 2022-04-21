@@ -22,6 +22,11 @@ public class DefaultULogManager implements ULogManager {
     }
 
     @Override
+    public void buildContext(ULogContext uLogContext) {
+        context.set(uLogContext);
+    }
+
+    @Override
     public boolean saveLog(Object result) {
         if (!existContext())
             return false;
@@ -35,7 +40,10 @@ public class DefaultULogManager implements ULogManager {
     }
 
     @Override
-    public void buildContext(ULogContext uLogContext) {
-        context.set(uLogContext);
+    public void formatDesc(String... params) {
+        if (!existContext())
+            return;
+        ULogContext context = getContext();
+        context.getULogHolder().formatDesc(params);
     }
 }

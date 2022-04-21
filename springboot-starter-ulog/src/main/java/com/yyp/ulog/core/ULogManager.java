@@ -34,5 +34,10 @@ public interface ULogManager {
      */
     void removeLog();
 
+    /**
+     * 格式化日志
+     */
+    void formatDesc(String... params);
+
 
 }
