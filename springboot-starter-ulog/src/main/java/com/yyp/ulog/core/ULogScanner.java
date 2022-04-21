@@ -1,8 +1,10 @@
 package com.yyp.ulog.core;
 
-import com.yyp.ulog.util.AnnotationUtil;
-import com.yyp.ulog.weaver.ULog;
+import cn.hutool.core.util.ReflectUtil;
+import com.yyp.ulog.core.parse.AnnotationParser;
+import com.yyp.ulog.core.parse.ULogAnnotationParser;
 import com.yyp.ulog.interceptor.ULogInterceptor;
+import com.yyp.ulog.weaver.ULogWeaverInfo;
 import com.yyp.ulog.weaver.ULogWeaverService;
 import lombok.SneakyThrows;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -10,6 +12,9 @@ import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
 import org.springframework.beans.BeansException;
+import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Method;
 
 /**
  * @author yyp
@@ -22,8 +27,16 @@ public final class ULogScanner extends AbstractAutoProxyCreator {
 
     private ULogWeaverService uLogWeaverService;
 
-    public ULogScanner(ULogWeaverService uLogWeaverService) {
+    private LogGlobalConfig logGlobalConfig;
+
+    private AnnotationParser<ULogWeaverInfo> uLogAnnotationParser = new ULogAnnotationParser();
+
+    public ULogScanner() {
+    }
+
+    public ULogScanner(ULogWeaverService uLogWeaverService, LogGlobalConfig logGlobalConfig) {
         this.uLogWeaverService = uLogWeaverService;
+        this.logGlobalConfig = logGlobalConfig;
     }
 
     @Override
@@ -39,10 +52,19 @@ public final class ULogScanner extends AbstractAutoProxyCreator {
     protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) {
         interceptor = null;
         Class<?> target = AopProxyUtils.ultimateTargetClass(bean);
-        if (!AnnotationUtil.existsAnnotation(target, ULog.class)) {
+
+        Method[] methods = ReflectUtil.getMethods(target);
+        for (Method method : methods) {
+            ULogWeaverInfo uLogWeaverInfo = uLogAnnotationParser.parseAnnotation(method);
+            if (StringUtils.hasText(uLogWeaverInfo.getType())) {
+                logGlobalConfig.getULogWeaverInfoMap().put(method, uLogWeaverInfo);
+                interceptor = new ULogInterceptor(uLogWeaverService, this.logGlobalConfig);
+            }
+        }
+
+        if (interceptor == null) {
             return bean;
         }
-        interceptor = new ULogInterceptor(uLogWeaverService);
         setProxyTargetClass(true);
         return super.wrapIfNecessary(bean, beanName, cacheKey);
     }

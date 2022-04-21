@@ -26,4 +26,6 @@ public class ULogWeaverInfo {
 
     private ServletRequest request;
 
+    private boolean enablePrint;
+
 }

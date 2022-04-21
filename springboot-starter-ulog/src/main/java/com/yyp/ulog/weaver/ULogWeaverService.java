@@ -28,12 +28,13 @@ public final class ULogWeaverService implements InitializingBean {
 
     public Object record(ULogWeaverInfo uLogWeaverInfo, BusinessHandler businessHandler) throws Throwable {
         boolean exist = uLogManager.existContext();
+        uLogWeaverInfo.setEnablePrint(logGlobalConfig.isEnablePrint());
         if (!exist) {
             ULogContext uLogContext = new SimpleULogContext(logGlobalConfig, uLogWeaverInfo);
             uLogManager.buildContext(uLogContext);
-
             ULogInfo uLogInfo = uLogFactory.createLog(uLogContext, uLogWeaverInfo);
             uLogContext.getULogHolder().setULogInfo(uLogInfo);
+            printRequestLog(uLogInfo);
         }
         return doRecord(!exist, businessHandler);
     }
@@ -59,8 +60,31 @@ public final class ULogWeaverService implements InitializingBean {
             }
             throw t;
         } finally {
-            if (record)
+            if (record) {
+                printResultLog(uLogManager.getContext().getULogHolder().getULogInfo());
                 uLogManager.removeLog();
+            }
+        }
+    }
+
+    protected void printRequestLog(ULogInfo uLogInfo) {
+        if (uLogInfo == null) {
+            return;
+        }
+        ULogWeaverInfo uLogWeaverInfo = uLogInfo.getULogWeaverInfo();
+        if (uLogWeaverInfo != null && uLogWeaverInfo.isEnablePrint() && uLogWeaverInfo.isNeedParam()) {
+            this.logGlobalConfig.getPrintHeadInfo().accept(uLogInfo);
+            this.logGlobalConfig.getPrintRequestInfo().accept(uLogInfo);
+        }
+    }
+
+    protected void printResultLog(ULogInfo uLogInfo) {
+        if (uLogInfo == null) {
+            return;
+        }
+        ULogWeaverInfo uLogWeaverInfo = uLogInfo.getULogWeaverInfo();
+        if (uLogWeaverInfo != null && uLogWeaverInfo.isEnablePrint() && uLogWeaverInfo.isNeedResult()) {
+            this.logGlobalConfig.getPrintResponseInfo().accept(uLogInfo);
         }
     }
 
@@ -73,7 +97,7 @@ public final class ULogWeaverService implements InitializingBean {
             if (logGlobalConfig.getContextIdBuilder() instanceof MDCContextIdBuilder)
                 MDC.put(((MDCContextIdBuilder) logGlobalConfig.getContextIdBuilder()).getContextIDKey(), info.getLogId());
             ULogWeaverInfo uLogWeaverInfo = info.getULogWeaverInfo();
-            if (uLogWeaverInfo != null) {
+            if (uLogWeaverInfo != null && !uLogWeaverInfo.isEnablePrint()) {
                 if (uLogWeaverInfo.isNeedParam()) {
                     logGlobalConfig.getPrintHeadInfo().accept(info);
                     logGlobalConfig.getPrintRequestInfo().accept(info);

@@ -24,8 +24,8 @@ public class ULogConfiguration {
     }
 
     @Bean
-    public ULogScanner ulogScanner(ULogWeaverService weaverService) {
-        return new ULogScanner(weaverService);
+    public ULogScanner ulogScanner(ULogWeaverService weaverService, LogGlobalConfig logGlobalConfig) {
+        return new ULogScanner(weaverService, logGlobalConfig);
     }
 
     @Bean

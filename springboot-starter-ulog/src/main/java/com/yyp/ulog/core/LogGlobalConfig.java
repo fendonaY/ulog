@@ -3,16 +3,20 @@ package com.yyp.ulog.core;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.yyp.ulog.core.builder.ContextIdBuilder;
+import com.yyp.ulog.weaver.ULogWeaverInfo;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -42,6 +46,18 @@ public class LogGlobalConfig {
     private ContextIdBuilder contextIdBuilder;
 
     /**
+     * 目标与日志编织信息的映射
+     */
+    private Map<Method, ULogWeaverInfo> uLogWeaverInfoMap = new ConcurrentHashMap<>();
+
+    /**
+     * 开启日志同步打印功能，
+     * 默认关闭，异步打印日志。
+     */
+    private boolean enablePrint = false;
+
+
+    /**
      * 简单的打印头部信息
      */
     private Consumer<ULogInfo> printHeadInfo = (uLogInfo) -> {
@@ -60,7 +76,6 @@ public class LogGlobalConfig {
         Logger uLog = LoggerFactory.getLogger("uLog");
         uLog.trace(stringJoiner.toString());
     };
-
     /**
      * 简单的打印请求信息
      */
@@ -84,7 +99,7 @@ public class LogGlobalConfig {
         uLog.trace("api：{} response：{}", uLogInfo.getApi(), resultLog);
     };
 
-    public  <T> void nonnullOrElseSet(Supplier<T> value, Consumer<? super T> consumer, T defaultValue) {
+    public <T> void nonnullOrElseSet(Supplier<T> value, Consumer<? super T> consumer, T defaultValue) {
         if (ObjectUtils.isEmpty(value.get())) {
             Optional.ofNullable(defaultValue).ifPresent(consumer);
         }

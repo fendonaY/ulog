@@ -39,6 +39,6 @@ public @interface ULog {
      * 支持format
      * <p>例：‘你{}吗’ -> ’你好吗‘</p>
      */
-    String desc();
+    String desc() default "u-log";
 
 }
