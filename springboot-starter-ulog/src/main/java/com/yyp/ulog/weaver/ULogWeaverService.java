@@ -28,7 +28,7 @@ public final class ULogWeaverService implements InitializingBean {
 
     public Object record(ULogWeaverInfo uLogWeaverInfo, BusinessHandler businessHandler) throws Throwable {
         boolean exist = uLogManager.existContext();
-        uLogWeaverInfo.setEnablePrint(logGlobalConfig.isEnablePrint());
+        uLogWeaverInfo.setEnablePrint(logGlobalConfig.isEnablePrint() && !logGlobalConfig.isGlobalPrint());
         if (!exist) {
             ULogContext uLogContext = new SimpleULogContext(logGlobalConfig, uLogWeaverInfo);
             uLogManager.buildContext(uLogContext);

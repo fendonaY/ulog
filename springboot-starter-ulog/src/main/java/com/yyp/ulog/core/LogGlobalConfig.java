@@ -57,6 +57,11 @@ public class LogGlobalConfig {
     private boolean enablePrint = false;
 
     /**
+     * 开启全局日志打印
+     */
+    private boolean globalPrint = false;
+
+    /**
      * 简单的打印头部信息
      */
     private Consumer<ULogInfo> printHeadInfo = (uLogInfo) -> {

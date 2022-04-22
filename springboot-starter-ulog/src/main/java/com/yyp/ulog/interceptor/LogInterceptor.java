@@ -25,7 +25,7 @@ public class LogInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        ULogInfo uLogInfo = mockRequestLog(request);
+        ULogInfo uLogInfo = mockRequestLog((RequestWrapper) request);
         logGlobalConfig.getPrintHeadInfo().accept(uLogInfo);
         logGlobalConfig.getPrintRequestInfo().accept(uLogInfo);
         return HandlerInterceptor.super.preHandle(request, response, handler);
@@ -33,27 +33,27 @@ public class LogInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws IOException {
-        logGlobalConfig.getPrintRequestInfo().accept(mockResultLog(request, response));
+        logGlobalConfig.getPrintRequestInfo().accept(mockResultLog((RequestWrapper) request, response));
     }
 
-    private ULogInfo mockRequestLog(HttpServletRequest request) {
+    private ULogInfo mockRequestLog(RequestWrapper request) {
         ULogInfo uLogInfo = new ULogInfo();
         ULogWeaverInfo uLogWeaverInfo = new ULogWeaverInfo();
         uLogWeaverInfo.setRequest(request);
-        RequestWrapper requestWrapper = new RequestWrapper(request);
         uLogInfo.setULogWeaverInfo(uLogWeaverInfo);
-        uLogInfo.setLogParam(requestWrapper.getRequestBody());
+        uLogInfo.setLogParam(request.getRequestBody());
         uLogInfo.setApi(request.getRequestURI());
         return uLogInfo;
     }
 
-    private ULogInfo mockResultLog(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private ULogInfo mockResultLog(RequestWrapper request, HttpServletResponse response) throws IOException {
         ULogInfo uLogInfo = new ULogInfo();
         ULogWeaverInfo uLogWeaverInfo = new ULogWeaverInfo();
         uLogInfo.setULogWeaverInfo(uLogWeaverInfo);
         ResponseWrapper responseWrapper = new ResponseWrapper(response);
         uLogInfo.setLogResult(responseWrapper.getResponseData());
         uLogInfo.setOperatorState(0);
+        uLogInfo.setLogDesc("global log");
         uLogInfo.setApi(request.getRequestURI());
         return uLogInfo;
     }
